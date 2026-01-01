@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Yannelli\PromptPipeline\Commands;
 
 use Illuminate\Console\Command;
-use Yannelli\PromptPipeline\Contracts\VariableProvider;
 use Yannelli\PromptPipeline\Facades\PromptPipeline;
 
 class VariablesCommand extends Command
