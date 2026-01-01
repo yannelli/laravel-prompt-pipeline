@@ -172,7 +172,7 @@ describe('Output Processors', function () {
 
         it('normalizes whitespace', function () {
             $processor = new Deduplicate(['strategies' => ['whitespace']]);
-            $output = "Hello    World";
+            $output = 'Hello    World';
 
             expect($processor->process($output))->toBe('Hello World');
         });

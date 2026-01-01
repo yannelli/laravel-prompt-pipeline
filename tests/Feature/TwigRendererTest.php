@@ -1,6 +1,5 @@
 <?php
 
-use Yannelli\PromptPipeline\Exceptions\PromptRenderException;
 use Yannelli\PromptPipeline\Rendering\TwigRenderer;
 
 describe('TwigRenderer', function () {

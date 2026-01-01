@@ -13,7 +13,6 @@ use Yannelli\PromptPipeline\Events\PromptRendering;
 use Yannelli\PromptPipeline\Exceptions\ProcessorException;
 use Yannelli\PromptPipeline\Exclusions\ExclusionSet;
 use Yannelli\PromptPipeline\Models\PromptTemplate;
-use Yannelli\PromptPipeline\Rendering\FragmentRegistry;
 use Yannelli\PromptPipeline\Rendering\TwigRenderer;
 use Yannelli\PromptPipeline\Rendering\VariableResolver;
 use Yannelli\PromptPipeline\Traits\HasPromptTemplates;
