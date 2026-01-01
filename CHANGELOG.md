@@ -2,6 +2,10 @@
 
 All notable changes to `:package_name` will be documented in this file.
 
+## v0.1.1 - 2026-01-01
+
+**Full Changelog**: https://github.com/yannelli/laravel-prompt-pipeline/compare/v0.1.0...v0.1.1
+
 ## v0.1.0 - 2026-01-01
 
 ### What's Changed
