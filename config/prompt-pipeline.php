@@ -25,7 +25,7 @@ return [
     */
 
     'cache' => [
-        'enabled' => env('PROMPT_PIPELINE_CACHE', true),
+        'enabled' => true,
         'path' => storage_path('framework/cache/prompt-pipeline'),
     ],
 

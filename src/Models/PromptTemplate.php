@@ -20,8 +20,8 @@ use Yannelli\PromptPipeline\Facades\PromptPipeline;
  * @property string $content
  * @property string|null $type
  * @property array<string, mixed>|null $metadata
- * @property string $templateable_type
- * @property string $templateable_id
+ * @property string|null $templateable_type
+ * @property string|null $templateable_id
  * @property bool $is_active
  * @property int $sort_order
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -33,7 +33,7 @@ class PromptTemplate extends Model
     use HasUlids;
 
     /**
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -56,7 +56,7 @@ class PromptTemplate extends Model
     ];
 
     /**
-     * @var array<string, string>
+     * @var array<string, class-string>
      */
     protected $dispatchesEvents = [
         'created' => PromptTemplateCreated::class,

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yannelli\PromptPipeline\Exclusions;
 
-class ExclusionSet
+final class ExclusionSet
 {
     /**
      * @param  array<string>  $fragments
@@ -18,9 +18,9 @@ class ExclusionSet
     /**
      * Create a new ExclusionSet instance.
      */
-    public static function make(): static
+    public static function make(): self
     {
-        return new static;
+        return new self;
     }
 
     /**
@@ -28,9 +28,9 @@ class ExclusionSet
      *
      * @param  array<string>  $slugs
      */
-    public function excludeFragments(array $slugs): static
+    public function excludeFragments(array $slugs): self
     {
-        return new static(
+        return new self(
             array_unique([...$this->fragments, ...$slugs]),
             $this->tags
         );
@@ -39,7 +39,7 @@ class ExclusionSet
     /**
      * Add a single fragment to exclude.
      */
-    public function excludeFragment(string $slug): static
+    public function excludeFragment(string $slug): self
     {
         return $this->excludeFragments([$slug]);
     }
@@ -49,9 +49,9 @@ class ExclusionSet
      *
      * @param  array<string>  $tags
      */
-    public function excludeTags(array $tags): static
+    public function excludeTags(array $tags): self
     {
-        return new static(
+        return new self(
             $this->fragments,
             array_unique([...$this->tags, ...$tags])
         );
@@ -60,7 +60,7 @@ class ExclusionSet
     /**
      * Add a single tag to exclude.
      */
-    public function excludeTag(string $tag): static
+    public function excludeTag(string $tag): self
     {
         return $this->excludeTags([$tag]);
     }
@@ -68,9 +68,9 @@ class ExclusionSet
     /**
      * Merge with another ExclusionSet.
      */
-    public function merge(ExclusionSet $other): static
+    public function merge(ExclusionSet $other): self
     {
-        return new static(
+        return new self(
             array_unique([...$this->fragments, ...$other->getFragments()]),
             array_unique([...$this->tags, ...$other->getTags()])
         );
@@ -123,11 +123,11 @@ class ExclusionSet
     /**
      * Create from configuration.
      */
-    public static function fromConfig(): static
+    public static function fromConfig(): self
     {
         $config = config('prompt-pipeline.exclusions', []);
 
-        return new static(
+        return new self(
             $config['fragments'] ?? [],
             $config['tags'] ?? []
         );
