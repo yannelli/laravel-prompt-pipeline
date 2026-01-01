@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('prompt_pipeline_templates', function (Blueprint $table) {
+            $table->ulid('id')->primary();
+            $table->string('name', 255);
+            $table->string('slug', 255)->nullable();
+            $table->text('content');
+            $table->string('type', 100)->nullable();
+            $table->json('metadata')->nullable();
+            $table->string('templateable_type', 255)->nullable();
+            $table->string('templateable_id', 36)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+
+            // Index for polymorphic relationship and type lookup
+            $table->index(['templateable_type', 'templateable_id', 'type']);
+
+            // Unique constraint for slug within a templateable scope
+            $table->unique(['templateable_type', 'templateable_id', 'slug']);
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('prompt_pipeline_templates');
+    }
+};
