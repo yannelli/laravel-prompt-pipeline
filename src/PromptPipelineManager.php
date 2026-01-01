@@ -47,9 +47,9 @@ class PromptPipelineManager
     /**
      * Create a pipeline for processing output only.
      */
-    public function processOutput(string $output): Pipeline
+    public function forOutput(string $output): Pipeline
     {
-        return Pipeline::processOutput($output);
+        return Pipeline::forOutput($output);
     }
 
     /**

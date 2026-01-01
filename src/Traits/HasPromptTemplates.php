@@ -13,6 +13,8 @@ use Yannelli\PromptPipeline\Models\PromptTemplate;
  * Trait for models that own prompt templates.
  *
  * @mixin Model
+ *
+ * @phpstan-require-extends Model
  */
 trait HasPromptTemplates
 {

@@ -47,7 +47,7 @@ describe('Pipeline', function () {
     });
 
     it('processes output only', function () {
-        $result = Pipeline::processOutput('  raw output  ')
+        $result = Pipeline::forOutput('  raw output  ')
             ->outputProcessor(TrimOutput::class)
             ->run();
 

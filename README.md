@@ -573,7 +573,7 @@ $rendered = PromptPipeline::fromString($templateString)
     ->render();
 
 // Process LLM output (no template, just processors)
-$cleaned = PromptPipeline::processOutput($llmResponse)
+$cleaned = PromptPipeline::forOutput($llmResponse)
     ->outputProcessor(ExtractJsonBlock::class)
     ->run();
 ```
@@ -1190,7 +1190,7 @@ class GenerateClinicalAssessment
         )->asStructured();
 
         // Process response
-        $result = PromptPipeline::processOutput($response->text)
+        $result = PromptPipeline::forOutput($response->text)
             ->outputProcessor(ExtractJsonBlock::class)
             ->run();
 

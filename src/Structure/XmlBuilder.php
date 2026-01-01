@@ -6,6 +6,9 @@ namespace Yannelli\PromptPipeline\Structure;
 
 use Closure;
 
+/**
+ * @final
+ */
 class XmlBuilder
 {
     /**
