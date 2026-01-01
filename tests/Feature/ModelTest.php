@@ -114,7 +114,7 @@ describe('HasPromptTemplates Trait', function () {
         ]);
 
         expect($template->templateable_type)->toBe(TestOrganization::class);
-        expect($template->templateable_id)->toBe((string) $org->id);
+        expect($template->templateable_id)->toEqual($org->id);
     });
 
     it('creates fragments for model', function () {

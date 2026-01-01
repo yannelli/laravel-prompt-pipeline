@@ -155,43 +155,45 @@ class TwigRenderer implements Renderer
      */
     protected function registerFunctions(): void
     {
+        $isSafeHtml = ['is_safe' => ['html']];
+
         // XML functions
         $this->twig->addFunction(new TwigFunction('xml', function (string $tag, ?string $content = null, array $attrs = []) {
             return $this->xmlTag($tag, $content, $attrs);
-        }));
+        }, $isSafeHtml));
 
         $this->twig->addFunction(new TwigFunction('xml_open', function (string $tag, array $attrs = []) {
             return $this->xmlOpen($tag, $attrs);
-        }));
+        }, $isSafeHtml));
 
         $this->twig->addFunction(new TwigFunction('xml_close', function (string $tag) {
             return "</{$tag}>";
-        }));
+        }, $isSafeHtml));
 
         $this->twig->addFunction(new TwigFunction('cdata', function (string $content) {
             return '<![CDATA['.$content.']]>';
-        }));
+        }, $isSafeHtml));
 
         // Claude tag functions
-        $this->twig->addFunction(new TwigFunction('system_instructions', fn ($content) => $this->xmlTag('system_instructions', $content)));
-        $this->twig->addFunction(new TwigFunction('instructions', fn ($content) => $this->xmlTag('instructions', $content)));
-        $this->twig->addFunction(new TwigFunction('context', fn ($content, $label = null) => $this->xmlTag('context', $content, $label ? ['label' => $label] : [])));
-        $this->twig->addFunction(new TwigFunction('task', fn ($content) => $this->xmlTag('task', $content)));
-        $this->twig->addFunction(new TwigFunction('constraints', fn (array $items) => $this->xmlTag('constraints', implode("\n", array_map(fn ($i) => "- {$i}", $items)))));
-        $this->twig->addFunction(new TwigFunction('rules', fn (array $items) => $this->xmlTag('rules', implode("\n", array_map(fn ($i) => "- {$i}", $items)))));
-        $this->twig->addFunction(new TwigFunction('output_format', fn ($content) => $this->xmlTag('output_format', $content)));
-        $this->twig->addFunction(new TwigFunction('user_message', fn ($content) => $this->xmlTag('user_message', $content)));
-        $this->twig->addFunction(new TwigFunction('query', fn ($content) => $this->xmlTag('query', $content)));
+        $this->twig->addFunction(new TwigFunction('system_instructions', fn ($content) => $this->xmlTag('system_instructions', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('instructions', fn ($content) => $this->xmlTag('instructions', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('context', fn ($content, $label = null) => $this->xmlTag('context', $content, $label ? ['label' => $label] : []), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('task', fn ($content) => $this->xmlTag('task', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('constraints', fn (array $items) => $this->xmlTag('constraints', implode("\n", array_map(fn ($i) => "- {$i}", $items))), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('rules', fn (array $items) => $this->xmlTag('rules', implode("\n", array_map(fn ($i) => "- {$i}", $items))), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('output_format', fn ($content) => $this->xmlTag('output_format', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('user_message', fn ($content) => $this->xmlTag('user_message', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('query', fn ($content) => $this->xmlTag('query', $content), $isSafeHtml));
 
         // Chain of thought functions
-        $this->twig->addFunction(new TwigFunction('thinking', fn ($content = null) => $this->xmlTag('thinking', $content ?? '')));
-        $this->twig->addFunction(new TwigFunction('thinking_open', fn () => $this->xmlOpen('thinking')));
-        $this->twig->addFunction(new TwigFunction('thinking_close', fn () => '</thinking>'));
-        $this->twig->addFunction(new TwigFunction('reasoning', fn ($content = null) => $this->xmlTag('reasoning', $content ?? '')));
-        $this->twig->addFunction(new TwigFunction('answer', fn ($content = null) => $this->xmlTag('answer', $content ?? '')));
-        $this->twig->addFunction(new TwigFunction('answer_open', fn () => $this->xmlOpen('answer')));
-        $this->twig->addFunction(new TwigFunction('answer_close', fn () => '</answer>'));
-        $this->twig->addFunction(new TwigFunction('scratchpad', fn () => $this->xmlTag('scratchpad', '')));
+        $this->twig->addFunction(new TwigFunction('thinking', fn ($content = null) => $this->xmlTag('thinking', $content ?? ''), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('thinking_open', fn () => $this->xmlOpen('thinking'), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('thinking_close', fn () => '</thinking>', $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('reasoning', fn ($content = null) => $this->xmlTag('reasoning', $content ?? ''), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('answer', fn ($content = null) => $this->xmlTag('answer', $content ?? ''), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('answer_open', fn () => $this->xmlOpen('answer'), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('answer_close', fn () => '</answer>', $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('scratchpad', fn () => $this->xmlTag('scratchpad', ''), $isSafeHtml));
 
         $this->twig->addFunction(new TwigFunction('cot_basic', fn () => 'Think step-by-step before providing your answer.'));
         $this->twig->addFunction(new TwigFunction('cot_guided', function (array $steps) {
@@ -199,35 +201,35 @@ class TwigRenderer implements Renderer
 
             return "Follow these steps:\n".implode("\n", $numbered);
         }));
-        $this->twig->addFunction(new TwigFunction('cot_structured', fn () => 'Use <thinking> tags to show your reasoning process, then provide your final answer in <answer> tags.'));
+        $this->twig->addFunction(new TwigFunction('cot_structured', fn () => 'Use <thinking> tags to show your reasoning process, then provide your final answer in <answer> tags.', $isSafeHtml));
 
         // Document functions
-        $this->twig->addFunction(new TwigFunction('document', fn ($content, $attrs = []) => $this->xmlTag('document', $content, $attrs)));
-        $this->twig->addFunction(new TwigFunction('documents_open', fn () => $this->xmlOpen('documents')));
-        $this->twig->addFunction(new TwigFunction('documents_close', fn () => '</documents>'));
-        $this->twig->addFunction(new TwigFunction('document_content', fn ($content) => $this->xmlTag('document_content', $content)));
-        $this->twig->addFunction(new TwigFunction('source', fn ($value) => $this->xmlTag('source', $value)));
+        $this->twig->addFunction(new TwigFunction('document', fn ($content, $attrs = []) => $this->xmlTag('document', $content, $attrs), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('documents_open', fn () => $this->xmlOpen('documents'), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('documents_close', fn () => '</documents>', $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('document_content', fn ($content) => $this->xmlTag('document_content', $content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('source', fn ($value) => $this->xmlTag('source', $value), $isSafeHtml));
 
         // Example functions
-        $this->twig->addFunction(new TwigFunction('examples_open', fn () => $this->xmlOpen('examples')));
-        $this->twig->addFunction(new TwigFunction('examples_close', fn () => '</examples>'));
-        $this->twig->addFunction(new TwigFunction('example', fn ($content, $label = null) => $this->xmlTag('example', $content, $label ? ['label' => $label] : [])));
+        $this->twig->addFunction(new TwigFunction('examples_open', fn () => $this->xmlOpen('examples'), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('examples_close', fn () => '</examples>', $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('example', fn ($content, $label = null) => $this->xmlTag('example', $content, $label ? ['label' => $label] : []), $isSafeHtml));
         $this->twig->addFunction(new TwigFunction('example_pair', function ($input, $output) {
             return $this->xmlTag('example',
                 $this->xmlTag('input', $input)."\n".$this->xmlTag('output', $output)
             );
-        }));
+        }, $isSafeHtml));
 
         // Fragment function
         $this->twig->addFunction(new TwigFunction('fragment', function (string $slug, array $vars = []) {
             return $this->resolveFragment($slug, $vars);
-        }));
+        }, $isSafeHtml));
 
         // Utility functions
-        $this->twig->addFunction(new TwigFunction('json', fn ($value, $pretty = false) => json_encode($value, $pretty ? JSON_PRETTY_PRINT : 0)));
-        $this->twig->addFunction(new TwigFunction('deduplicate', fn ($content) => $this->deduplicate($content)));
-        $this->twig->addFunction(new TwigFunction('deduplicate_whitespace', fn ($content) => $this->deduplicateWhitespace($content)));
-        $this->twig->addFunction(new TwigFunction('deduplicate_lines', fn ($content) => $this->deduplicateLines($content)));
+        $this->twig->addFunction(new TwigFunction('json', fn ($value, $pretty = false) => json_encode($value, $pretty ? JSON_PRETTY_PRINT : 0), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('deduplicate', fn ($content) => $this->deduplicate($content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('deduplicate_whitespace', fn ($content) => $this->deduplicateWhitespace($content), $isSafeHtml));
+        $this->twig->addFunction(new TwigFunction('deduplicate_lines', fn ($content) => $this->deduplicateLines($content), $isSafeHtml));
     }
 
     /**
@@ -235,10 +237,12 @@ class TwigRenderer implements Renderer
      */
     protected function registerFilters(): void
     {
-        $this->twig->addFilter(new TwigFilter('json', fn ($value, $pretty = false) => json_encode($value, $pretty ? JSON_PRETTY_PRINT : 0)));
-        $this->twig->addFilter(new TwigFilter('deduplicate', fn ($content) => $this->deduplicate($content)));
-        $this->twig->addFilter(new TwigFilter('deduplicate_whitespace', fn ($content) => $this->deduplicateWhitespace($content)));
-        $this->twig->addFilter(new TwigFilter('deduplicate_lines', fn ($content) => $this->deduplicateLines($content)));
+        $isSafeHtml = ['is_safe' => ['html']];
+
+        $this->twig->addFilter(new TwigFilter('json', fn ($value, $pretty = false) => json_encode($value, $pretty ? JSON_PRETTY_PRINT : 0), $isSafeHtml));
+        $this->twig->addFilter(new TwigFilter('deduplicate', fn ($content) => $this->deduplicate($content), $isSafeHtml));
+        $this->twig->addFilter(new TwigFilter('deduplicate_whitespace', fn ($content) => $this->deduplicateWhitespace($content), $isSafeHtml));
+        $this->twig->addFilter(new TwigFilter('deduplicate_lines', fn ($content) => $this->deduplicateLines($content), $isSafeHtml));
     }
 
     /**
