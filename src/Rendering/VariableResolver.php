@@ -6,7 +6,6 @@ namespace Yannelli\PromptPipeline\Rendering;
 
 use Illuminate\Database\Eloquent\Model;
 use Yannelli\PromptPipeline\Contracts\VariableProvider;
-use Yannelli\PromptPipeline\Traits\HasPromptTemplates;
 
 class VariableResolver
 {
@@ -66,10 +65,11 @@ class VariableResolver
             $variables = array_merge($variables, $provider->getVariables());
         }
 
-        // 2. Model variables (if model uses HasPromptTemplates)
+        // 2. Model variables (if model uses HasPromptTemplates trait)
         if ($model !== null && $this->modelHasPromptTemplates($model)) {
-            /** @var HasPromptTemplates $model */
-            $variables = array_merge($variables, $model->promptTemplateVariables());
+            /** @var callable(): array<string, mixed> $callback */
+            $callback = [$model, 'promptTemplateVariables'];
+            $variables = array_merge($variables, $callback());
         }
 
         // 3. User-provided variables (highest priority)

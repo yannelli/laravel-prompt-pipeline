@@ -15,8 +15,10 @@ use Yannelli\PromptPipeline\Exclusions\ExclusionSet;
 use Yannelli\PromptPipeline\Models\PromptTemplate;
 use Yannelli\PromptPipeline\Rendering\TwigRenderer;
 use Yannelli\PromptPipeline\Rendering\VariableResolver;
-use Yannelli\PromptPipeline\Traits\HasPromptTemplates;
 
+/**
+ * @final
+ */
 class Pipeline
 {
     protected ?PromptTemplate $template = null;
@@ -87,7 +89,7 @@ class Pipeline
     /**
      * Create a pipeline for processing output only.
      */
-    public static function processOutput(string $output): static
+    public static function forOutput(string $output): static
     {
         $pipeline = new static;
         $pipeline->rawOutput = $output;
@@ -114,10 +116,11 @@ class Pipeline
     {
         $this->model = $model;
 
-        // If model uses HasPromptTemplates and has an owner, set it on the fragment registry
+        // If model uses HasPromptTemplates trait, merge its variables
         if (method_exists($model, 'promptTemplateVariables')) {
-            /** @var HasPromptTemplates $model */
-            $this->variables = array_merge($model->promptTemplateVariables(), $this->variables);
+            /** @var array<string, mixed> $modelVariables */
+            $modelVariables = $model->promptTemplateVariables();
+            $this->variables = array_merge($modelVariables, $this->variables);
         }
 
         return $this;
